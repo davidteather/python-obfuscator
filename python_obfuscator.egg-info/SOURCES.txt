@@ -1,0 +1,11 @@
+README.md
+setup.py
+python_obfuscator/__init__.py
+python_obfuscator/cli.py
+python_obfuscator/obfuscator.py
+python_obfuscator/utilities.py
+python_obfuscator.egg-info/PKG-INFO
+python_obfuscator.egg-info/SOURCES.txt
+python_obfuscator.egg-info/dependency_links.txt
+python_obfuscator.egg-info/entry_points.txt
+python_obfuscator.egg-info/top_level.txt

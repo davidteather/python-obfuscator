@@ -1,0 +1,3 @@
+[console_scripts]
+python-obfuscator = python_obfuscator.cli:main
+
