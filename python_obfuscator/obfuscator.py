@@ -1,5 +1,6 @@
 import logging
-from .utilities import obfuscate
+from .techniques import obfuscate
+
 
 class obfuscator:
     def __init__(self, logging_level=logging.error):

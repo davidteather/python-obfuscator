@@ -2,3 +2,5 @@ test.py
 __pycache__
 dist
 build
+python_obfuscator.egg-info
+.pytest_cache
