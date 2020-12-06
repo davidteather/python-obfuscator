@@ -10,7 +10,7 @@ Consider sponsoring me [here](https://github.com/sponsors/davidteather)
 ## Installing
 
 ```
-pip install python_obfuscator
+pip install python-obfuscator
 ```
 
 ## Quickstart
