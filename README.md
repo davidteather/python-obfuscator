@@ -2,7 +2,7 @@
 
 One night I got bored of writing good code, so I made good code to make bad code.
 
-[![GitHub release (latest by date)](https://img.shields.io/github/v/release/davidteather/python-obfuscator?style=flat-square)](https://github.com/davidteather/TikTok-Api/releases) [![Downloads](https://static.pepy.tech/personalized-badge/python_obfuscator?period=total&units=international_system&left_color=grey&right_color=orange&left_text=Downloads)](https://pypi.org/project/python_obfuscator/) ![](https://visitor-badge.laobi.icu/badge?page_id=davidteather.python-obfuscator) [![Linkedin](https://img.shields.io/badge/LinkedIn-0077B5?style=flat-square&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/david-teather-4400a37a/) 
+[![GitHub release (latest by date)](https://img.shields.io/github/v/release/davidteather/python-obfuscator?style=flat-square)](https://github.com/davidteather/python-obfuscator/releases) [![Downloads](https://static.pepy.tech/personalized-badge/python-obfuscator?period=total&units=international_system&left_color=grey&right_color=orange&left_text=Downloads)](https://pypi.org/project/python-obfuscator/) ![](https://visitor-badge.laobi.icu/badge?page_id=davidteather.python-obfuscator) [![Linkedin](https://img.shields.io/badge/LinkedIn-0077B5?style=flat-square&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/david-teather-4400a37a/) 
 
 
 Consider sponsoring me [here](https://github.com/sponsors/davidteather)
