@@ -11,7 +11,7 @@ def one_liner(code):
     formatted_code = re.sub(
         r"(;)\1+",
         ";",
-        """exec(\"\"\"{}\"\"\")""".format(
+        """exec(\"\"\"{};\"\"\")""".format(
             code.replace("\n", ";").replace('"""', '\\"\\"\\"')
         ),
     )
