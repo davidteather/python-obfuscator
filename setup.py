@@ -13,7 +13,7 @@ setuptools.setup(
     description="It's a python obfuscator.",
     author="David Teather",
     author_email="contact.davidteather@gmail.com",
-    url="https://github.com/davidteather/tiktok-api",
+    url="https://github.com/davidteather/python-obfuscator",
     long_description=long_description,
     long_description_content_type="text/markdown",
     download_url="https://github.com/davidteather/python-obfuscator/tarball/master",
