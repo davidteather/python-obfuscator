@@ -17,12 +17,12 @@ pip install python-obfuscator
 
 Print out obfuscated code
 ```
-pyobfuscator -i your_file.py
+pyobfuscate -i your_file.py
 ```
 
 Apply changes to the input file
 ```
-pyobfuscator -i your_file.py -r True
+pyobfuscate -i your_file.py -r True
 ```
 
 ## More Detailed Documentation
