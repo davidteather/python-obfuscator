@@ -8,7 +8,7 @@ with open("README.md", "r") as fh:
 setuptools.setup(
     name="python_obfuscator",
     packages=setuptools.find_packages(),
-    version="0.0.1",
+    version="0.0.2",
     license="MIT",
     description="It's a python obfuscator.",
     author="David Teather",
