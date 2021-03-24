@@ -44,7 +44,7 @@ obfuscator = python_obfuscator.obfuscator()
 code_to_obfuscate = "print('hello world')"
 obfuscated_code = obfuscator.obfuscate(code_to_obfuscate, remove_techniques[add_random_variables])
 ```
-Find a list of all techniques [here](https://github.com/davidteather/python-obfuscator/blob/main/python_obfuscator/utilities.py)
+Find a list of all techniques [here](https://github.com/davidteather/python-obfuscator/blob/210da2d3dfb96ab7653fad869a43cb67aeb0fe67/python_obfuscator/techniques.py#L87)
 
 ## Example Obfuscated Code
 
