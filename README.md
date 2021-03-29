@@ -70,7 +70,7 @@ print("{} that's a great number!".format(user_value))
 
 * **David Teather** - *Initial work* - [davidteather](https://github.com/davidteather)
 
-See also the list of [contributors](https://github.com/davidteather/TikTok-Api/contributors) who participated in this project.
+See also the list of [contributors](https://github.com/davidteather/python-obfuscator) who participated in this project.
 
 ## License
 
