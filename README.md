@@ -61,11 +61,6 @@ print("{} that's a great number!".format(user_value))
 
 [With `--one-liner True`](https://gist.github.com/davidteather/75e48c04bf74f0262fe2919239a74295)
 
-
-## Built With
-
-* [Python 3.7](https://www.python.org/) - The web framework used
-
 ## Authors
 
 * **David Teather** - *Initial work* - [davidteather](https://github.com/davidteather)
