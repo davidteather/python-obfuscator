@@ -12,7 +12,6 @@ def convert_file(args):
     remove = []
     if not args.one_liner:
         remove.append(one_liner)
-
     with open(file_path, "r") as f:
         data = f.read()
         obfuscated_data = obfuscate.obfuscate(data, remove_techniques=remove)

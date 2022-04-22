@@ -32,6 +32,17 @@ def variable_renamer(code):
         )
     return code
 
+def function_renamer(code):
+    # I don't really know what this does but the latest thing wich is similar uses it
+    code = "\n" + code
+    function_names = re.findall(r"(?<=def )\w+(?=\(\))", code)
+    name_generator = VariableNameGenerator()
+    for i in range(len(function_names)):
+        obfuscated_name = name_generator.get_random(i + 1)
+        code = re.sub(
+            r"(\b{}\b)(?=\(\))".format(function_names[i]), obfuscated_name, code
+        )
+    return code
 
 def add_random_variables(code):
     useless_variables_to_add = random.randint(100, 400)
@@ -84,4 +95,4 @@ def obfuscate(code, remove_techniques=[]):
     return code
 
 
-all_methods = [variable_renamer, add_random_variables, one_liner]
+all_methods = [variable_renamer, function_renamer, add_random_variables, one_liner]
