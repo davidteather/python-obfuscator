@@ -28,7 +28,10 @@ def variable_renamer(code):
     variable_names = re.findall(r"(\w+)(?=( |)=( |))", code)
     name_generator = VariableNameGenerator()
     for i in range(len(variable_names)):
-        obfuscated_name = name_generator.get_random(i + 1)
+        while True:
+            obfuscated_name = name_generator.get_random(i + 1)
+            if not obfuscated_name in used_names:
+                break
         used_names.append(obfuscated_name)
         code = re.sub(
             r"(?<=[^.])(\b{}\b)".format(variable_names[i][0]), obfuscated_name, code
@@ -45,6 +48,7 @@ def function_renamer(code):
             obfuscated_name = name_generator.get_random(i + 1)
             if not obfuscated_name in used_names:
                 break
+        used_names.append(obfuscated_name)
         code = re.sub(
             r"(\b{}\b)(?=\(\))".format(function_names[i]), obfuscated_name, code
         )
