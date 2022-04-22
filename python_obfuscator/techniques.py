@@ -36,6 +36,8 @@ def variable_renamer(code):
         code = re.sub(
             r"(?<=[^.])(\b{}\b)".format(variable_names[i][0]), obfuscated_name, code
         )
+    # Removes the new lines that were added at the start to make the code harder to find
+    code = code.lstrip("\n")
     return code
 
 def function_renamer(code):
@@ -52,6 +54,8 @@ def function_renamer(code):
         code = re.sub(
             r"(\b{}\b)(?=\(\))".format(function_names[i]), obfuscated_name, code
         )
+    # Removes the new lines that were added at the start to make the code harder to find
+    code = code.lstrip("\n")
     return code
 
 def add_random_variables(code):
