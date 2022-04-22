@@ -20,6 +20,8 @@ def one_liner(code):
         return formatted_code[1:]
     return formatted_code
 
+used_names = []
+
 def variable_renamer(code):
     # add \n so regex picks it up
     code = "\n" + code
@@ -27,6 +29,7 @@ def variable_renamer(code):
     name_generator = VariableNameGenerator()
     for i in range(len(variable_names)):
         obfuscated_name = name_generator.get_random(i + 1)
+        used_names.append(obfuscated_name)
         code = re.sub(
             r"(?<=[^.])(\b{}\b)".format(variable_names[i][0]), obfuscated_name, code
         )
@@ -38,7 +41,10 @@ def function_renamer(code):
     function_names = re.findall(r"(?<=def )\w+(?=\(\))", code)
     name_generator = VariableNameGenerator()
     for i in range(len(function_names)):
-        obfuscated_name = name_generator.get_random(i + 1)
+        while True:
+            obfuscated_name = name_generator.get_random(i + 1)
+            if not obfuscated_name in used_names:
+                break
         code = re.sub(
             r"(\b{}\b)(?=\(\))".format(function_names[i]), obfuscated_name, code
         )
