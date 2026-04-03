@@ -16,6 +16,8 @@ black = "^25.1.0"
 isort = "^6.0.0"
 pytest = "^8.3.4"
 coverage = "^7.6.12"
+pytest-cov = "^7.1.0"
+types-regex = "^2026.3.32.20260329"
 
 [project]
 name = "python_obfuscator"
@@ -35,7 +37,15 @@ classifiers = [
 ]
 
 [project.optional-dependencies]
-dev = ["pytest", "black", "mypy", "coverage", "isort"]
+dev = [
+    "pytest",
+    "pytest-cov",
+    "black",
+    "mypy",
+    "types-regex",
+    "coverage",
+    "isort",
+]
 
 [project.scripts]
 pyobfuscate = "python_obfuscator.cli:cli"
@@ -47,7 +57,34 @@ line_length = 88
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 
+[tool.mypy]
+python_version = "3.10"
+packages = ["python_obfuscator"]
+explicit_package_bases = true
+warn_unused_ignores = true
+warn_return_any = true
+show_error_codes = true
+strict = false
+disallow_untyped_defs = false
+# TODO: Enable when more of the codebase is annotated:
+# check_untyped_defs = true
+ignore_missing_imports = false
+
+[tool.pyright]
+pythonVersion = "3.10"
+include = ["python_obfuscator"]
+exclude = ["tests", "build", "dist", ".venv"]
+typeCheckingMode = "basic"
+reportMissingImports = true
+reportMissingTypeStubs = false
+
 [tool.coverage.run]
 branch = true
 source = ["python_obfuscator"]
 omit = ["tests/*"]
+
+[tool.coverage.report]
+show_missing = true
+skip_empty = true
+precision = 1
+fail_under = 95

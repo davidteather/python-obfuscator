@@ -7,3 +7,6 @@ python_obfuscator.egg-info
 .mypy_cache
 .ruff_cache
 obfuscated/
+.coverage
+coverage.xml
+htmlcov/

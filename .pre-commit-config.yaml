@@ -24,6 +24,14 @@ repos:
 
   - repo: local
     hooks:
+      - id: mypy
+        name: mypy
+        entry: poetry run mypy python_obfuscator
+        language: system
+        pass_filenames: false
+        always_run: true
+        stages: [commit]
+
       - id: pytest-unit
         name: Run unit tests
         entry: poetry run pytest tests/ -v
@@ -31,6 +39,14 @@ repos:
         pass_filenames: false
         always_run: true
         stages: [commit]
+
+      - id: pytest-coverage-report
+        name: pytest coverage report (manual)
+        entry: poetry run pytest tests --cov=python_obfuscator --cov-report=term-missing --cov-report=html
+        language: system
+        pass_filenames: false
+        always_run: true
+        stages: [manual]
 
 default_language_version:
   python: python3
