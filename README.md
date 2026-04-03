@@ -19,6 +19,20 @@ pip install python-obfuscator
 
 Requires Python ≥ 3.10.
 
+### From source (contributors)
+
+```bash
+pip install -e ".[dev]"
+```
+
+Or with [Poetry](https://python-poetry.org/):
+
+```bash
+poetry install
+```
+
+(`poetry install` pulls dev dependencies from the lockfile; use `poetry run <command>` to run tools inside that environment.)
+
 ---
 
 ## Quick start — CLI
@@ -158,8 +172,9 @@ The dead-code injector's overhead scales with the number of scopes and loop iter
 
 ## Running the test suite
 
+After a dev install ([from source](#from-source-contributors)):
+
 ```bash
-pip install -e ".[dev]"
 pytest
 ```
 
@@ -172,6 +187,8 @@ coverage run -m pytest && coverage report
 # E2E tests with benchmark output
 pytest tests/e2e/ -v -s
 ```
+
+With Poetry, run the same commands through the project environment, for example `poetry run pytest`, `poetry run coverage run -m pytest`, and `poetry run pytest tests/e2e/ -v -s`.
 
 ---
 
