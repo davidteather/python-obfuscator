@@ -1,0 +1,105 @@
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry]
+packages = [{ include = "python_obfuscator" }]
+
+[tool.poetry.dependencies]
+python = ">=3.10"
+typer = "^0.24.1"
+
+[tool.poetry.group.dev.dependencies]
+mypy = "^1.15.0"
+black = "^25.1.0"
+isort = "^6.0.0"
+ruff = ">=0.9.0"
+pytest = "^8.3.4"
+coverage = "^7.6.12"
+pytest-cov = "^7.1.0"
+pyright = "^1.1.408"
+
+[project]
+name = "python_obfuscator"
+version = "0.1.0"
+description = "A Python source-code obfuscator built on the ast module."
+readme = "README.md"
+authors = [{ name = "David Teather", email = "contact.davidteather@gmail.com" }]
+license = { file = "LICENSE" }
+dependencies = ["typer>=0.24.1,<0.25.0"]
+requires-python = ">=3.10"
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "Topic :: Software Development :: Build Tools",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest",
+    "pytest-cov",
+    "black",
+    "mypy",
+    "ruff",
+    "coverage",
+    "isort",
+    "pyright",
+]
+
+[project.scripts]
+pyobfuscate = "python_obfuscator.cli:cli"
+
+[tool.black]
+line-length = 88
+target-version = ["py310"]
+
+[tool.isort]
+profile = "black"
+line_length = 88
+
+[tool.ruff]
+line-length = 88
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "W"]
+ignore = [
+    "E501",   # line-too-long — black handles this
+    "UP007",  # use X | Y for union types — conflicts with from __future__ import annotations
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.mypy]
+python_version = "3.10"
+packages = ["python_obfuscator"]
+explicit_package_bases = true
+warn_unused_ignores = true
+warn_return_any = true
+show_error_codes = true
+strict = false
+disallow_untyped_defs = true
+check_untyped_defs = true
+ignore_missing_imports = false
+
+[tool.pyright]
+pythonVersion = "3.10"
+include = ["python_obfuscator"]
+exclude = ["tests", "build", "dist", ".venv"]
+typeCheckingMode = "basic"
+reportMissingImports = true
+reportMissingTypeStubs = false
+
+[tool.coverage.run]
+branch = true
+source = ["python_obfuscator"]
+omit = ["tests/*", "python_obfuscator/cli/*"]
+
+[tool.coverage.report]
+show_missing = true
+skip_empty = true
+precision = 1
+fail_under = 95
