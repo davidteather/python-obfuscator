@@ -25,22 +25,26 @@ jobs:
         with:
           python-version: "3.12"
 
-      - name: Install lint tools
-        run: pip install ruff isort pyright
-      - name: Install Black (match pyproject / poetry.lock)
-        run: pip install "black==25.11.0"
+      - name: Install Poetry
+        run: curl -sSL https://install.python-poetry.org | python - -y
+
+      - name: Update PATH
+        run: echo "$HOME/.local/bin" >> $GITHUB_PATH
+
+      - name: Install dependencies
+        run: poetry install --no-interaction
 
       - name: Ruff (lint)
-        run: ruff check python_obfuscator tests
+        run: poetry run ruff check python_obfuscator tests
 
       - name: Black (format check)
-        run: black --check python_obfuscator tests
+        run: poetry run black --check python_obfuscator tests
 
       - name: isort (import order check)
-        run: isort --check-only python_obfuscator tests
+        run: poetry run isort --check-only python_obfuscator tests
 
       - name: Pyright (type check)
-        run: pyright python_obfuscator
+        run: poetry run pyright python_obfuscator
 
   test:
     name: Test (Python ${{ matrix.python-version }})
