@@ -18,14 +18,16 @@ pip install python-obfuscator
 
 ## Quickstart
 
-Print out obfuscated code
+By default, obfuscated code is written under an **`obfuscated/`** directory (created next to your current working directory). Paths under the current directory are preserved (e.g. `src/app.py` → `obfuscated/src/app.py`).
+
 ```
 pyobfuscate -i your_file.py
 ```
 
-Apply changes to the input file
+Print to stdout instead (e.g. for piping):
+
 ```
-pyobfuscate -i your_file.py -r True
+pyobfuscate -i your_file.py --stdout
 ```
 
 ## More Detailed Documentation
@@ -62,7 +64,7 @@ print("{} that's a great number!".format(user_value))
 [With `pyobfuscate -i file.py`](https://gist.github.com/davidteather/b6ff932140d8c174b9c6f50c9b42fdaf)
 
 
-[With `--one-liner True`](https://gist.github.com/davidteather/75e48c04bf74f0262fe2919239a74295)
+[With `--one-liner`](https://gist.github.com/davidteather/75e48c04bf74f0262fe2919239a74295)
 
 ## Authors
 
