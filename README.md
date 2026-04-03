@@ -30,6 +30,12 @@ Print to stdout instead (e.g. for piping):
 pyobfuscate -i your_file.py --stdout
 ```
 
+Print the installed version (from `python_obfuscator.version`):
+
+```
+pyobfuscate --version
+```
+
 ## More Detailed Documentation
 
 You can use this as a module if you want

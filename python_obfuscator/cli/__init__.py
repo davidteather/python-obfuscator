@@ -1,3 +1,4 @@
+import sys
 from pathlib import Path
 from typing import Annotated
 
@@ -5,6 +6,7 @@ import typer
 
 import python_obfuscator
 from python_obfuscator.techniques import one_liner as one_liner_technique
+from python_obfuscator.version import __version__
 
 DEFAULT_OUTPUT_DIR = "obfuscated"
 
@@ -25,6 +27,7 @@ def main(
     input_path: Annotated[
         Path,
         typer.Option(
+            ...,
             "--input",
             "-i",
             help="File to obfuscate",
@@ -49,21 +52,26 @@ def main(
         ),
     ] = False,
 ) -> None:
+    resolved = input_path.expanduser().resolve()
+
     obfuscate = python_obfuscator.obfuscator()
     remove = []
     if not include_one_liner:
         remove.append(one_liner_technique)
 
-    data = input_path.read_text()
+    data = resolved.read_text()
     obfuscated_data = obfuscate.obfuscate(data, remove_techniques=remove)
 
     if stdout:
         typer.echo(obfuscated_data)
     else:
-        out_path = _resolved_output_path(input_path)
+        out_path = _resolved_output_path(resolved)
         out_path.write_text(obfuscated_data)
         typer.secho(f"Wrote {out_path}", err=True)
 
 
 def cli() -> None:
+    if len(sys.argv) == 2 and sys.argv[1] in ("--version", "-V"):
+        typer.echo(__version__)
+        raise SystemExit(0)
     typer.run(main)
