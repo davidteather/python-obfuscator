@@ -6,8 +6,9 @@ build-backend = "poetry.core.masonry.api"
 packages = [{ include = "python_obfuscator" }]
 
 [tool.poetry.dependencies]
-python = ">=3.9"
-regex = "*"
+python = ">=3.10"
+regex = ">=2026.3.32"
+typer = "^0.24.1"
 
 [tool.poetry.group.dev.dependencies]
 mypy = "^1.15.0"
@@ -23,8 +24,8 @@ description = "It's a python obfuscator."
 readme = "README.md"
 authors = [{ name = "David Teather", email = "contact.davidteather@gmail.com" }]
 license = { file = "LICENSE" }
-dependencies = ["regex"]
-requires-python = ">=3.9"
+dependencies = ["regex>=2026.3.32", "typer>=0.24.1,<0.25.0"]
+requires-python = ">=3.10"
 classifiers = [
     "Development Status :: 3 - Alpha",
     "Intended Audience :: Developers",
