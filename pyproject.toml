@@ -81,7 +81,7 @@ reportMissingTypeStubs = false
 [tool.coverage.run]
 branch = true
 source = ["python_obfuscator"]
-omit = ["tests/*"]
+omit = ["tests/*", "python_obfuscator/cli/*"]
 
 [tool.coverage.report]
 show_missing = true

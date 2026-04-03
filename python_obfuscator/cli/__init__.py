@@ -5,7 +5,9 @@ from typing import Annotated
 import typer
 
 import python_obfuscator
-from python_obfuscator.techniques import one_liner as one_liner_technique
+from python_obfuscator.config import ObfuscationConfig
+from python_obfuscator.obfuscator import Obfuscator
+from python_obfuscator.techniques import all_technique_names
 from python_obfuscator.version import __version__
 
 DEFAULT_OUTPUT_DIR = "obfuscated"
@@ -43,24 +45,25 @@ def main(
             help="Print obfuscated code to stdout instead of writing a file.",
         ),
     ] = False,
-    include_one_liner: Annotated[
-        bool,
+    disable: Annotated[
+        list[str],
         typer.Option(
-            "--one-liner",
-            "-ol",
-            help="Include the one-liner obfuscation technique.",
+            "--disable",
+            "-d",
+            help=(
+                "Disable a technique by name.  May be repeated.  "
+                f"Available: {', '.join(sorted(all_technique_names()))}"
+            ),
         ),
-    ] = False,
+    ] = [],
 ) -> None:
     resolved = input_path.expanduser().resolve()
 
-    obfuscate = python_obfuscator.obfuscator()
-    remove = []
-    if not include_one_liner:
-        remove.append(one_liner_technique)
+    config = ObfuscationConfig.all_enabled().without(*disable)
+    obfuscator = Obfuscator(config)
 
     data = resolved.read_text()
-    obfuscated_data = obfuscate.obfuscate(data, remove_techniques=remove)
+    obfuscated_data = obfuscator.obfuscate(data)
 
     if stdout:
         typer.echo(obfuscated_data)
