@@ -1,4 +1,5 @@
-name: CI Test
+name: CI
+
 on:
   push:
     branches:
@@ -13,8 +14,34 @@ permissions:
   contents: read
 
 jobs:
-  Unit-Tests:
-    timeout-minutes: 10
+  lint:
+    name: Lint & format
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install lint tools
+        run: pip install ruff black isort pyright
+
+      - name: Ruff (lint)
+        run: ruff check python_obfuscator tests
+
+      - name: Black (format check)
+        run: black --check python_obfuscator tests
+
+      - name: isort (import order check)
+        run: isort --check-only python_obfuscator tests
+
+      - name: Pyright (type check)
+        run: pyright python_obfuscator
+
+  test:
+    name: Test (Python ${{ matrix.python-version }})
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -22,14 +49,15 @@ jobs:
         python-version: ["3.10", "3.11", "3.12", "3.13", "3.14"]
     steps:
       - uses: actions/checkout@v4
+
       - name: Install Python ${{ matrix.python-version }}
         uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
+          allow-prereleases: true
 
       - name: Install Poetry
-        run: |
-          curl -sSL https://install.python-poetry.org | python - -y
+        run: curl -sSL https://install.python-poetry.org | python - -y
 
       - name: Update PATH
         run: echo "$HOME/.local/bin" >> $GITHUB_PATH
@@ -40,13 +68,13 @@ jobs:
       - name: Type check (mypy)
         run: poetry run mypy python_obfuscator
 
-      - name: Run unit tests with coverage
+      - name: Run tests with coverage
         run: |
           poetry run coverage run -m pytest
           poetry run coverage report
           poetry run coverage xml
 
-      - name: Upload coverage reports to Codecov
+      - name: Upload coverage to Codecov
         if: matrix.python-version == '3.12'
         uses: codecov/codecov-action@v5
         with:

@@ -1,6 +1,5 @@
 import pytest
 
-import python_obfuscator  # trigger registration
 from python_obfuscator.techniques.base import ASTTransform, TechniqueMetadata
 from python_obfuscator.techniques.registry import (
     _REGISTRY,

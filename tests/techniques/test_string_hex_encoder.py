@@ -3,8 +3,6 @@
 import ast
 import textwrap
 
-import pytest
-
 from python_obfuscator.techniques.ast_transforms.string_hex_encoder import (
     StringHexEncoder,
     _str_to_hex_call,

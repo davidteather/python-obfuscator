@@ -3,7 +3,6 @@ import textwrap
 
 import pytest
 
-import python_obfuscator
 from python_obfuscator.config import ObfuscationConfig
 from python_obfuscator.obfuscator import Obfuscator, _validate_config, obfuscate
 

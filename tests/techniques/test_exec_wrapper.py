@@ -3,7 +3,6 @@
 import ast
 import textwrap
 
-import python_obfuscator  # trigger registration
 from python_obfuscator.techniques.ast_transforms.exec_wrapper import ExecWrapper
 from python_obfuscator.techniques.registry import all_technique_names
 

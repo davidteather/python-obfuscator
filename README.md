@@ -1,83 +1,184 @@
-# Python-Obfuscator
+# python-obfuscator
 
-One night I got bored of writing good code, so I made good code to make bad code.
+[![CI](https://github.com/davidteather/python-obfuscator/actions/workflows/package-test.yml/badge.svg)](https://github.com/davidteather/python-obfuscator/actions/workflows/package-test.yml)
+[![GitHub release (latest by date)](https://img.shields.io/github/v/release/davidteather/python-obfuscator?style=flat-square)](https://github.com/davidteather/python-obfuscator/releases)
+[![Downloads](https://static.pepy.tech/personalized-badge/python-obfuscator?period=total&units=international_system&left_color=grey&right_color=orange&left_text=Downloads)](https://pypi.org/project/python-obfuscator/)
+[![Codecov](https://codecov.io/gh/davidteather/python-obfuscator/branch/main/graph/badge.svg)](https://codecov.io/gh/davidteather/python-obfuscator)
 
-[![GitHub release (latest by date)](https://img.shields.io/github/v/release/davidteather/python-obfuscator?style=flat-square)](https://github.com/davidteather/python-obfuscator/releases) [![Downloads](https://static.pepy.tech/personalized-badge/python-obfuscator?period=total&units=international_system&left_color=grey&right_color=orange&left_text=Downloads)](https://pypi.org/project/python-obfuscator/) ![](https://visitor-badge.laobi.icu/badge?page_id=davidteather.python-obfuscator) [![Linkedin](https://img.shields.io/badge/LinkedIn-0077B5?style=flat-square&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/david-teather-4400a37a/) 
+A Python source-code obfuscator built on the standard-library `ast` module.  It applies multiple independent techniques — each individually togglable — to make code harder to read while keeping it fully executable.  See [Known limitations](#known-limitations) before use.
 
-### **DONT USE IN PRODUCTION**
+If this project is useful to you, consider [sponsoring development](https://github.com/sponsors/davidteather).
 
-**I just made this because it was interesting to me. I do plan on making this more official in the future, but currently don't have the time!**
-
-Consider sponsoring me [here](https://github.com/sponsors/davidteather)
+---
 
 ## Installing
 
-```
+```bash
 pip install python-obfuscator
 ```
 
-## Quickstart
+Requires Python ≥ 3.10.
 
-By default, obfuscated code is written under an **`obfuscated/`** directory (created next to your current working directory). Paths under the current directory are preserved (e.g. `src/app.py` → `obfuscated/src/app.py`).
+---
 
-```
+## Quick start — CLI
+
+```bash
+# Writes obfuscated/your_file.py (path structure is preserved)
 pyobfuscate -i your_file.py
-```
 
-Print to stdout instead (e.g. for piping):
-
-```
+# Print to stdout
 pyobfuscate -i your_file.py --stdout
-```
 
-Print the installed version (from `python_obfuscator.version`):
+# Disable specific techniques
+pyobfuscate -i your_file.py --disable dead_code_injector --disable exec_wrapper
 
-```
+# Show version
 pyobfuscate --version
 ```
 
-## More Detailed Documentation
+---
 
-You can use this as a module if you want
-```
-import python_obfuscator
-obfuscator = python_obfuscator.obfuscator()
+## Python API
 
-code_to_obfuscate = "print('hello world')"
-```
+### One-shot helper
 
-You can also exclude certain techniques applied for obfuscation
-```
-import python_obfuscator
-from python_obfuscator.techniques import add_random_variables
-obfuscator = python_obfuscator.obfuscator()
+```python
+from python_obfuscator import obfuscate
 
-code_to_obfuscate = "print('hello world')"
-obfuscated_code = obfuscator.obfuscate(code_to_obfuscate, remove_techniques=[add_random_variables])
-```
-Find a list of all techniques [here](https://github.com/davidteather/python-obfuscator/blob/210da2d3dfb96ab7653fad869a43cb67aeb0fe67/python_obfuscator/techniques.py#L87)
-
-## Example Obfuscated Code
-
-Input
-```
-y = input("what's your favorite number")
-
-user_value = int(y)
-print("{} that's a great number!".format(user_value))
+source = "x = 1\nprint(x + 2)"
+result = obfuscate(source)
+print(result)
 ```
 
-[With `pyobfuscate -i file.py`](https://gist.github.com/davidteather/b6ff932140d8c174b9c6f50c9b42fdaf)
+### Selective techniques
 
+```python
+from python_obfuscator import obfuscate, ObfuscationConfig
 
-[With `--one-liner`](https://gist.github.com/davidteather/75e48c04bf74f0262fe2919239a74295)
+# All techniques except dead-code injection
+config = ObfuscationConfig.all_enabled().without("dead_code_injector")
+result = obfuscate(source, config=config)
+
+# Only string encoding
+config = ObfuscationConfig.only("string_hex_encoder")
+result = obfuscate(source, config=config)
+```
+
+### Reusing across multiple files (caches the pipeline)
+
+```python
+from python_obfuscator import Obfuscator, ObfuscationConfig
+
+obf = Obfuscator(ObfuscationConfig.all_enabled())
+for path in my_files:
+    path.write_text(obf.obfuscate(path.read_text()))
+```
+
+### Config combinators
+
+```python
+cfg = ObfuscationConfig.all_enabled()   # every registered technique
+cfg = ObfuscationConfig.only("variable_renamer", "exec_wrapper")
+cfg = cfg.without("exec_wrapper")       # returns a new frozen config
+cfg = cfg.with_added("dead_code_injector")
+```
+
+---
+
+## Techniques
+
+| Name | Priority | What it does |
+|------|----------|--------------|
+| `variable_renamer` | 10 | Renames local variables, function names, parameters, and class names to visually ambiguous identifiers (`lIIllIlI…`). Excludes builtins, imports, dunders, and attribute-accessed names. |
+| `string_hex_encoder` | 20 | Replaces every string literal `"hi"` with `bytes.fromhex('6869').decode('utf-8')`. Skips f-strings. |
+| `dead_code_injector` | 30 | Injects dead variable assignments at **every scope level** — module body, function bodies, class bodies, if/for/while/try/with branches. Some assignments reference other dead variables to simulate computation. |
+| `exec_wrapper` | 100 | Wraps the entire module in a single `exec("…")` call, reducing the top-level AST to one statement. Runs last. |
+
+Techniques are applied in priority order (lowest first).
+
+---
+
+## Example
+
+**Input**
+
+```python
+def greet(name):
+    msg = "Hello, " + name
+    print(msg)
+
+greet("world")
+```
+
+**Output** (all techniques enabled — abridged)
+
+```python
+exec('def lIlIllI(IIlIlII):\n    lIllIlI = bytes.fromhex(\'48656c6c6f2c20\').decode(\'utf-8\') + IIlIlII\n    ...\nlIlIllI(bytes.fromhex(\'776f726c64\').decode(\'utf-8\'))')
+```
+
+---
+
+## Performance overhead
+
+Benchmarks run on an Apple M-series machine, 20 iterations each.  The test programs cover OOP, algorithms, functional patterns, number theory, and string processing.
+
+### Total overhead (all techniques)
+
+| Program | Original | Obfuscated | Overhead |
+|---------|----------|------------|---------|
+| `algorithms.py` | 0.94 ms | 1.98 ms | +112% |
+| `cipher.py` | 1.37 ms | 2.67 ms | +95% |
+| `data_structures.py` | 0.72 ms | 2.20 ms | +207% |
+| `functional.py` | 0.67 ms | 1.71 ms | +155% |
+| `number_theory.py` | 1.84 ms | 3.16 ms | +72% |
+| `oop_simulation.py` | 0.68 ms | 1.66 ms | +144% |
+
+### Per-technique contribution (average across all programs)
+
+| Technique | Avg overhead | Notes |
+|-----------|-------------|-------|
+| `variable_renamer` | ~5% | Pure rename — negligible at runtime |
+| `string_hex_encoder` | ~12% | `bytes.fromhex` call per string literal |
+| `dead_code_injector` | ~85% | Dominant cost — dead assignments execute every iteration |
+| `exec_wrapper` | ~2% | Single extra `exec` layer |
+
+The dead-code injector's overhead scales with the number of scopes and loop iterations in the original program.  Programs with tight inner loops see the most overhead.
+
+---
+
+## Known limitations
+
+- **Class method names are not renamed.** Attribute-accessed names (`obj.method`) cannot be safely renamed without full type-inference, so the renamer conservatively excludes them.
+- **Keyword argument names are not renamed.** `fn(key=val)` call-site keyword strings are bare AST strings, not `Name` nodes, and are not updated when a parameter is renamed.
+- **No scope-aware renaming.** The same identifier used in two independent function scopes maps to the same obfuscated name (which is semantically correct but less obfuscated than it could be).
+- **No control-flow obfuscation.** Opaque predicates, bogus branches, and integer encoding are not implemented.
+
+---
+
+## Running the test suite
+
+```bash
+pip install -e ".[dev]"
+pytest
+```
+
+Coverage is enforced at ≥ 95% on every CI run.
+
+```bash
+# With coverage report
+coverage run -m pytest && coverage report
+
+# E2E tests with benchmark output
+pytest tests/e2e/ -v -s
+```
+
+---
 
 ## Authors
 
-* **David Teather** - *Initial work* - [davidteather](https://github.com/davidteather)
-
-See also the list of [contributors](https://github.com/davidteather/python-obfuscator) who participated in this project.
+**David Teather** — [davidteather](https://github.com/davidteather)
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
+MIT — see [LICENSE](LICENSE).

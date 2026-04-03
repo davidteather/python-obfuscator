@@ -2,7 +2,6 @@
 
 import textwrap
 
-import python_obfuscator
 from python_obfuscator import ObfuscationConfig, Obfuscator, obfuscate
 
 

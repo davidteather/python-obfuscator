@@ -3,8 +3,6 @@
 import ast
 import textwrap
 
-import pytest
-
 from python_obfuscator.techniques.ast_transforms.variable_renamer import (
     VariableRenamer,
     _NameCollector,

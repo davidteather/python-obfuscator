@@ -1,2 +1,2 @@
-from .variable_name_generator import VariableNameGenerator
-from .random_datatype import RandomDataTypeGenerator
+from .random_datatype import RandomDataTypeGenerator as RandomDataTypeGenerator
+from .variable_name_generator import VariableNameGenerator as VariableNameGenerator

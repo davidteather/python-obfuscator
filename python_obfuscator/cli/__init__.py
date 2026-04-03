@@ -4,7 +4,6 @@ from typing import Annotated
 
 import typer
 
-import python_obfuscator
 from python_obfuscator.config import ObfuscationConfig
 from python_obfuscator.obfuscator import Obfuscator
 from python_obfuscator.techniques import all_technique_names

@@ -1,6 +1,5 @@
 import pytest
 
-import python_obfuscator  # ensure registration side-effects run
 from python_obfuscator.config import ObfuscationConfig
 from python_obfuscator.techniques.registry import all_technique_names
 

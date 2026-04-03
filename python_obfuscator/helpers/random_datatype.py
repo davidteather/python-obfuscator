@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import random
 import string
-from typing import Callable
+from collections.abc import Callable
 
 
 class RandomDataTypeGenerator:
