@@ -26,7 +26,9 @@ jobs:
           python-version: "3.12"
 
       - name: Install lint tools
-        run: pip install ruff black isort pyright
+        run: pip install ruff isort pyright
+      - name: Install Black (match pyproject / poetry.lock)
+        run: pip install "black==25.11.0"
 
       - name: Ruff (lint)
         run: ruff check python_obfuscator tests
