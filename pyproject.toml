@@ -1,0 +1,52 @@
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry]
+packages = [{ include = "python_obfuscator" }]
+
+[tool.poetry.dependencies]
+python = ">=3.9"
+regex = "*"
+
+[tool.poetry.group.dev.dependencies]
+mypy = "^1.15.0"
+black = "^25.1.0"
+isort = "^6.0.0"
+pytest = "^8.3.4"
+coverage = "^7.6.12"
+
+[project]
+name = "python_obfuscator"
+version = "0.0.2"
+description = "It's a python obfuscator."
+readme = "README.md"
+authors = [{ name = "David Teather", email = "contact.davidteather@gmail.com" }]
+license = { file = "LICENSE" }
+dependencies = ["regex"]
+requires-python = ">=3.9"
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "Topic :: Software Development :: Build Tools",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+]
+
+[project.optional-dependencies]
+dev = ["pytest", "black", "mypy", "coverage", "isort"]
+
+[project.scripts]
+pyobfuscate = "python_obfuscator.cli:cli"
+
+[tool.isort]
+profile = "black"
+line_length = 88
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.coverage.run]
+branch = true
+source = ["python_obfuscator"]
+omit = ["tests/*"]

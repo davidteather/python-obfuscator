@@ -4,3 +4,5 @@ dist
 build
 python_obfuscator.egg-info
 .pytest_cache
+.mypy_cache
+.ruff_cache
