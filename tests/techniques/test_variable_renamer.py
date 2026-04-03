@@ -31,6 +31,21 @@ class TestNameCollector:
         assert "print" not in renameable
         assert "len" not in renameable
 
+    def test_does_not_collect_builtin_names_used_only_in_calls(self) -> None:
+        """Regression #10: ``int(…)``, ``str(…)``, etc. use Load context, not Store."""
+        renameable = _collect(
+            textwrap.dedent(
+                """\
+                class A:
+                    def __init__(self):
+                        self.fps = int(25)
+                        self.tag = str(99)
+                """
+            )
+        )
+        assert "int" not in renameable
+        assert "str" not in renameable
+
     def test_does_not_collect_imported_name(self) -> None:
         renameable = _collect("import os\npath = os.getcwd()")
         assert "os" not in renameable
@@ -107,6 +122,36 @@ class TestVariableRenamer:
         result = _apply(source)
         assert "len" in result
 
+    def test_builtin_type_converters_in_calls_not_renamed(self) -> None:
+        """Regression #10: call sites like ``int(25)`` must stay as builtins.
+
+        Only bound names are renamed; ``int`` / ``str`` in call position are
+        :class:`ast.Load`, not collected, and must not become random ids.
+        """
+        source = textwrap.dedent(
+            """\
+            class A:
+                def __init__(self):
+                    self.fps = int(25)
+                    self.tag = str(99)
+            """
+        )
+        result = _apply(source)
+        assert "int(25)" in result
+        assert "str(99)" in result
+        tree = ast.parse(result)
+        class_def = tree.body[0]
+        assert isinstance(class_def, ast.ClassDef)
+        init = class_def.body[0]
+        assert isinstance(init, ast.FunctionDef)
+        for stmt in init.body:
+            assert isinstance(stmt, ast.Assign)
+            call = stmt.value
+            assert isinstance(call, ast.Call)
+            func = call.func
+            assert isinstance(func, ast.Name)
+            assert func.id in ("int", "str")
+
     def test_import_name_not_renamed(self) -> None:
         source = "import os\npath = os.getcwd()"
         result = _apply(source)
@@ -116,6 +161,55 @@ class TestVariableRenamer:
         source = "if __name__ == '__main__': pass"
         result = _apply(source)
         assert "__name__" in result
+
+    def test_string_literal_unchanged_when_it_contains_renamed_identifier(self) -> None:
+        """Only :class:`ast.Name` nodes rename; string contents must not be touched.
+
+        A naive textual substitution could turn ``'my name is evil'`` into
+        ``'my <obfuscated> is evil'`` when the variable ``name`` is renamed.
+        """
+        source = "name = 'my name is evil'\n"
+        result = _apply(source)
+        tree = ast.parse(result)
+        assign = tree.body[0]
+        assert isinstance(assign, ast.Assign)
+        assert isinstance(assign.targets[0], ast.Name)
+        assert assign.targets[0].id != "name"
+        val = assign.value
+        assert isinstance(val, ast.Constant)
+        assert val.value == "my name is evil"
+
+    def test_name_main_guard_with_imports_preserves_name_dunder(self) -> None:
+        """Regression: __name__ in `if __name__ == '__main__'` must stay intact.
+
+        It is only ever loaded here, is excluded as a dunder/builtin from the
+        rename map, and must not become a random identifier (would break the
+        main guard).
+        """
+        source = textwrap.dedent(
+            """\
+            from file1 import f1
+            from file2 import f2
+
+            if __name__ == "__main__":
+                f1()
+                f2()
+                print("f3")
+            """
+        )
+        result = _apply(source)
+        assert "__name__" in result
+        assert "__main__" in result
+        # Imported symbols are not renamed; calls must still match imports.
+        assert "f1()" in result
+        assert "f2()" in result
+        tree = ast.parse(result)
+        if_node = tree.body[2]
+        assert isinstance(if_node, ast.If)
+        test = if_node.test
+        assert isinstance(test, ast.Compare)
+        assert isinstance(test.left, ast.Name)
+        assert test.left.id == "__name__"
 
     def test_function_name_is_renamed(self) -> None:
         source = "def compute(): return 42"
